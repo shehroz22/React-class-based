@@ -1,7 +1,17 @@
 import React, { Component } from "react";
 import NewsItem from "./NewsItem";
+import Spinner from "./Spinner";
+import PropTypes from "prop-types";
 
 export default class News extends Component {
+  static defaultProps = {
+    country: "in",
+    pageSize: "8",
+  };
+  static propTypes = {
+    country: PropTypes.string,
+    pageSize: PropTypes.number,
+  };
   articles = [
     {
       source: { id: "the-washington-post", name: "The Washington Post" },
@@ -281,18 +291,23 @@ export default class News extends Component {
   }
 
   async componentDidMount() {
-    let url =
-      "https://newsapi.org/v2/top-headlines?country=in&apiKey=9bc57b952db64bf69abbed7fa96dcc25&page=1&pageSize=20";
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=9bc57b952db64bf69abbed7fa96dcc25&page=1&pageSize=${this.props.pageSize}`;
+    this.setState({ loading: true });
     let ftch = await fetch(url);
     let prs = await ftch.json();
-    this.setState({ articles: prs.articles });
+    this.setState({ articles: prs.articles, loading: false });
   }
   firstPage = async () => {
     console.log("wp");
 
-    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=9bc57b952db64bf69abbed7fa96dcc25&page=${
+    let url = `https://newsapi.org/v2/top-headlines?country=${
+      this.props.country
+    }&category=${
+      this.props.category
+    }&apiKey=9bc57b952db64bf69abbed7fa96dcc25&page=${
       this.state.page - 1
-    }&pageSize=20`;
+    }&pageSize=${this.props.pageSize}`;
+    this.setState({ loading: true });
     let ftch = await fetch(url);
     let prs = await ftch.json();
 
@@ -300,42 +315,56 @@ export default class News extends Component {
       page: this.state.page - 1,
       articles: prs.articles,
       totalResults: prs.totalResults,
+      loading: false,
     });
   };
   lastPage = async () => {
     console.log("done");
-    if (this.state.page + 1 > Math.ceil(this.state.totalResults / 20)) {
-    } else {
-      let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=9bc57b952db64bf69abbed7fa96dcc25&page=${
+    if (
+      !(
+        this.state.page + 1 >
+        Math.ceil(this.state.totalResults / this.props.pageSize)
+      )
+    ) {
+      let url = `https://newsapi.org/v2/top-headlines?country=${
+        this.props.country
+      }&category=${
+        this.props.category
+      }&apiKey=9bc57b952db64bf69abbed7fa96dcc25&page=${
         this.state.page + 1
-      }&pageSize=20`;
+      }&pageSize=${this.props.pageSize}`;
+      this.setState({ loading: true });
       let ftch = await fetch(url);
       let prs = await ftch.json();
 
       this.setState({
         page: this.state.page + 1,
         articles: prs.articles,
+        loading: false,
       });
     }
   };
   render() {
     return (
       <div className="container my-3">
-        <h1>Kara News</h1>
+        <h1 className="text-center">Kara News</h1>
+
+        <div className="text-center"> {this.state.loading && <Spinner />}</div>
 
         <div className="row">
-          {this.state.articles.map((element) => {
-            return (
-              <div key={element.url} className="col md-3">
-                <NewsItem
-                  myTitle={element.title}
-                  myDescription={element.description}
-                  thisImg={element.urlToImage}
-                  newsUrl={element.newsUrl}
-                />
-              </div>
-            );
-          })}
+          {!this.state.loading &&
+            this.state.articles.map((element) => {
+              return (
+                <div key={element.url} className="col md-3">
+                  <NewsItem
+                    myTitle={element.title}
+                    myDescription={element.description}
+                    thisImg={element.urlToImage}
+                    newsUrl={element.newsUrl}
+                  />
+                </div>
+              );
+            })}
         </div>
         <div className=" container d-flex justify-content-around">
           <button
@@ -347,6 +376,10 @@ export default class News extends Component {
             &larr;Previous
           </button>
           <button
+            disabled={
+              this.state.page + 1 >
+              Math.ceil(this.state.totalResults / this.props.pageSize)
+            }
             type="button"
             className="btn btn-dark"
             onClick={this.lastPage}
