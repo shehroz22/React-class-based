@@ -7,6 +7,7 @@ import News from "./Components/News";
 
 import { HashRouter, Routes, Route, Link } from "react-router-dom";
 export default class App extends Component {
+  apiKey = "9bc57b952db64bf69abbed7fa96dcc25";
   render() {
     return (
       <div>
@@ -21,6 +22,7 @@ export default class App extends Component {
                   key="general"
                   pageSize={6}
                   country="us"
+                  apiKey={this.apiKey}
                   category="general"
                 />
               }
@@ -33,6 +35,7 @@ export default class App extends Component {
                   key="business"
                   pageSize={6}
                   country="us"
+                  apiKey={this.apiKey}
                   category="business"
                 />
               }
@@ -44,6 +47,7 @@ export default class App extends Component {
                   key="science"
                   pageSize={6}
                   country="us"
+                  apiKey={this.apiKey}
                   category="science"
                 />
               }
@@ -55,6 +59,7 @@ export default class App extends Component {
                   key="entertainment"
                   pageSize={6}
                   country="us"
+                  apiKey={this.apiKey}
                   category="entertainment"
                 />
               }
@@ -67,6 +72,7 @@ export default class App extends Component {
                   key="health"
                   pageSize={6}
                   country="us"
+                  apiKey={this.apiKey}
                   category="health"
                 />
               }
@@ -78,6 +84,7 @@ export default class App extends Component {
                   key="sports"
                   pageSize={6}
                   country="us"
+                  apiKey={this.apiKey}
                   category="sports"
                 />
               }
@@ -89,6 +96,7 @@ export default class App extends Component {
                   key="technology"
                   pageSize={6}
                   country="us"
+                  apiKey={this.apiKey}
                   category="technology"
                 />
               }

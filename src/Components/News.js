@@ -291,7 +291,7 @@ export default class News extends Component {
   }
 
   async componentDidMount() {
-    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=9bc57b952db64bf69abbed7fa96dcc25&page=1&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=1&pageSize=${this.props.pageSize}`;
     this.setState({ loading: true });
     let ftch = await fetch(url);
     let prs = await ftch.json();
